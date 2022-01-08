@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>index.js - Postman Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#addTrack">addTrack</a></li><li data-type='method'><a href="Player.html#join">join</a></li><li data-type='method'><a href="Player.html#shuffleQueue">shuffleQueue</a></li><li data-type='method'><a href="Player.html#skipCurrentTrack">skipCurrentTrack</a></li><li data-type='method'><a href="Player.html#startNextTrack">startNextTrack</a></li></ul></li><li><a href="Track.html">Track</a><ul class='methods'><li data-type='method'><a href="Track.html#play">play</a></li><li data-type='method'><a href="Track.html#preload">preload</a></li><li data-type='method'><a href="Track.html#toHHMMSS">toHHMMSS</a></li></ul></li><li><a href="YoutubePlaylistTrack.html">YoutubePlaylistTrack</a><ul class='methods'><li data-type='method'><a href="YoutubePlaylistTrack.html#play">play</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#preload">preload</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#setInfo">setInfo</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#toHHMMSS">toHHMMSS</a></li></ul></li><li><a href="YoutubeTrack.html">YoutubeTrack</a><ul class='methods'><li data-type='method'><a href="YoutubeTrack.html#play">play</a></li><li data-type='method'><a href="YoutubeTrack.html#preload">preload</a></li><li data-type='method'><a href="YoutubeTrack.html#setInfo">setInfo</a></li><li data-type='method'><a href="YoutubeTrack.html#toHHMMSS">toHHMMSS</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="Player.html#event:joinedVoiceChannel">joinedVoiceChannel</a></li><li><a href="Player.html#event:playerCreated">playerCreated</a></li><li><a href="Player.html#event:playerDestroyed">playerDestroyed</a></li><li><a href="Player.html#event:playingTrack">playingTrack</a></li><li><a href="Player.html#event:skippedTrack">skippedTrack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#events">events</a></li><li><a href="global.html#getPlayer">getPlayer</a></li><li><a href="global.html#players">players</a></li><li><a href="global.html#removePlayer">removePlayer</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {
+  joinVoiceChannel,
+  createAudioPlayer,
+  entersState,
+  StreamType,
+  AudioPlayerStatus,
+  VoiceConnectionStatus,
+  generateDependencyReport,
+} = require('@discordjs/voice');
+
+const {
+  EventEmitter
+} = require('events');
+
+/**
+ * All the players with the guildId as the key
+ * @type {Object}
+ */
+exports.players = {}
+
+exports.Track = require("./tracks/track.js")
+exports.YoutubeTrack = require("./tracks/youtubeTrack.js")
+exports.YoutubePlaylistTrack = require("./tracks/youtubePlaylistTrack.js")
+
+/** The player, handles joining, playback and queueing of tracks. It shouldn't be necessary to create this object as getPlayer will create it for you.*/
+class Player {
+  /**
+   * @param {Snowflake} guildId - The ID of the guild
+   */
+  constructor(guildId) {
+    exports.players[guildId] = this
+    this.guildId = guildId
+    this.queue = []
+    this.playing = false
+    this.player = createAudioPlayer()
+    this.player.on("stateChange", (state) => {
+      // Check if track is finished
+      if (this.playing) {
+        if (this.queue[0].resource.started &amp;&amp; !this.queue[0].resource.audioPlayer) {
+          this.playing = false
+          if (this.startNextTrack(true) == null) {}
+        }
+      }
+    })
+    this.player.on("error", console.log)
+
+    exports.events.emit('playerCreated', this);
+  }
+
+  /**
+   * Join a voice channel
+   * @param {VoiceChannel} voiceChannel - discord.js voiceChannel object to join
+   */
+  async join(voiceChannel) {
+    let channel = voiceChannel.id
+    let guildId = voiceChannel.guild.id
+
+    const connection = joinVoiceChannel({
+      channelId: channel,
+      guildId: guildId,
+      adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+      selfDeaf: true
+    });
+
+    try {
+      await entersState(connection, VoiceConnectionStatus.Ready, 30e3)
+      await connection.subscribe(this.player)
+
+      if (this.connection) this.connection.destroy()
+      this.channel = channel
+      this.guildId = guildId
+      this.connection = connection
+
+
+      exports.events.emit('joinedVoiceChannel', this);
+
+    } catch (error) {
+      connection.destroy();
+      throw error;
+    }
+  }
+
+  /**
+   * methodTwo description
+   * @param  {Boolean} [shift=false] If the player should play the next element in the queue, or restart the current.
+   * @param  {Boolean} [preloadNext=true] If the player should preload the next track for quicker playback.
+   * @return {Promise&lt;?Track>} The track that started playing.
+   */
+  async startNextTrack(shift = false, preloadNext = true) {
+    if (shift) this.queue.shift();
+    if (this.queue[0]) {
+      let resource = await this.queue[0].play()
+      this.player.play(resource)
+      await entersState(this.player, AudioPlayerStatus.Playing, 5e3);
+      this.playing = true
+
+      exports.events.emit('playingTrack', this, this.queue[0])
+      if (this.queue[1]) {
+        this.queue[1].preload()
+      }
+      return this.queue[0]
+    } else {
+      exports.removePlayer(this.guildId)
+    }
+    return
+  }
+  /**
+   * Skip the currently playing track.
+   */
+  skipCurrentTrack() {
+    if (this.queue[0]) {
+      exports.events.emit('skippedTrack', this)
+      this.player.stop()
+    }
+  }
+
+  /**
+   * Add a track to the queue
+   * @param  {Track} track - The track to be added to the queue
+   * @return {Number} The queue length
+   */
+  addTrack(track) {
+    this.queue.push(track)
+    exports.events.emit('addedTrack', this, track)
+    return this.queue.length
+  }
+
+  /**
+   * Shuffles the queue
+   */
+  shuffleQueue() {
+    let playing = this.queue.shift()
+    this.queue.sort(() => Math.random() - 0.5);
+    this.queue.unshift(playing)
+  }
+}
+
+exports.Player = Player
+
+/**
+ * Deletes the player for the specified guildID
+ *
+ * @param {Snowflake} guildId - The ID of the guild
+ */
+exports.removePlayer = (guildId) => {
+  exports.events.emit('playerDestroyed', guildId)
+  exports.players[guildId].connection.destroy()
+  exports.players[guildId].player.stop()
+  exports.players[guildId] = undefined
+  delete exports.players[guildId]
+}
+
+/**
+ * Gets the player for the specified guildID
+ *
+ * @param {Snowflake} guildId - The ID of the guild
+ * @param {Boolean} [createPlayer=false] - If the player should be created if it doesn't exist
+ * @return {Player}
+ */
+exports.getPlayer = (guildId, createPlayer = false) => {
+  if (exports.players[guildId]) {
+    return exports.players[guildId]
+  } else {
+    if (createPlayer) {
+      return new exports.Player(guildId)
+    } else {
+      return
+    }
+  }
+}
+
+/**
+ * Player was destroyed
+ *
+ * @event Player#playerDestroyed
+ * @type {Object}
+ * @property {Snowflake} guildId - The guild that the player belonged to
+ */
+
+/**
+ * Player created event.
+ *
+ * @event Player#playerCreated
+ * @type {object}
+ * @property {Player} player - The player that the track was added to
+ * @property {Track} track - The track that was added
+ */
+
+/**
+ * Player skipped track
+ *
+ * @event Player#skippedTrack
+ * @type {object}
+ * @property {Player} player - The player that skipped
+ */
+
+/**
+ * Player created event.
+ *
+ * @event Player#playerCreated
+ * @type {object}
+ * @property {Player} player - The player that was created
+ */
+
+/**
+ * Player joined a voice channel
+ *
+ * @event Player#joinedVoiceChannel
+ * @type {object}
+ * @property {Player} player - The player that joined
+ */
+
+/**
+ * Player started playing a track.
+ *
+ * @event Player#playingTrack
+ * @type {object}
+ * @property {Player} player - The player that started playing
+ * @property {Track} track - The track that was started
+ */
+
+/**
+ * The eventemitter
+ * @type {EventEmitter}
+ */
+exports.events = new EventEmitter();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated at Sat Jan 08 2022 23:06:08 GMT+0100 (sentraleuropeisk normaltid)
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

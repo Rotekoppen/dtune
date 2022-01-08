@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>tracks/youtubeTrack.js - Postman Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#addTrack">addTrack</a></li><li data-type='method'><a href="Player.html#join">join</a></li><li data-type='method'><a href="Player.html#shuffleQueue">shuffleQueue</a></li><li data-type='method'><a href="Player.html#skipCurrentTrack">skipCurrentTrack</a></li><li data-type='method'><a href="Player.html#startNextTrack">startNextTrack</a></li></ul></li><li><a href="Track.html">Track</a><ul class='methods'><li data-type='method'><a href="Track.html#play">play</a></li><li data-type='method'><a href="Track.html#preload">preload</a></li><li data-type='method'><a href="Track.html#toHHMMSS">toHHMMSS</a></li></ul></li><li><a href="YoutubePlaylistTrack.html">YoutubePlaylistTrack</a><ul class='methods'><li data-type='method'><a href="YoutubePlaylistTrack.html#play">play</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#preload">preload</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#setInfo">setInfo</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#toHHMMSS">toHHMMSS</a></li></ul></li><li><a href="YoutubeTrack.html">YoutubeTrack</a><ul class='methods'><li data-type='method'><a href="YoutubeTrack.html#play">play</a></li><li data-type='method'><a href="YoutubeTrack.html#preload">preload</a></li><li data-type='method'><a href="YoutubeTrack.html#setInfo">setInfo</a></li><li data-type='method'><a href="YoutubeTrack.html#toHHMMSS">toHHMMSS</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="Player.html#event:joinedVoiceChannel">joinedVoiceChannel</a></li><li><a href="Player.html#event:playerCreated">playerCreated</a></li><li><a href="Player.html#event:playerDestroyed">playerDestroyed</a></li><li><a href="Player.html#event:playingTrack">playingTrack</a></li><li><a href="Player.html#event:skippedTrack">skippedTrack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#events">events</a></li><li><a href="global.html#getPlayer">getPlayer</a></li><li><a href="global.html#players">players</a></li><li><a href="global.html#removePlayer">removePlayer</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">tracks/youtubeTrack.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const ytdl = require('ytdl-core');
+const Track = require('./track.js')
+/**
+ * Represents a youtube video
+ * @type {YoutubeTrack}
+ * @extends {Track}
+ */
+class YoutubeTrack extends Track {
+  /**
+   * @param {String} url - The Url of the video
+   * @param {Object} ytmetadata - Metadata obtained from ytdl.getInfo()
+   * @param {Snowflake} [requesterId=undefined] - The ID of the requester
+   */
+  constructor(url, ytmetadata, requesterId = undefined, type = "YoutubeTrack") {
+    super(url, requesterId, type)
+    if (this.type == "YoutubeTrack") {
+      this.metadata = ytmetadata
+      this.setInfo(ytmetadata)
+    }
+  }
+  /**
+   * Sets the info of the track according to data from ytdl.getInfo
+   * @param {Object} ytmetadata - Data from ytdl.getInfo
+   */
+  setInfo(ytmetadata) {
+    this.info.type = this.type
+    this.info.title = ytmetadata.videoDetails?.title
+    this.info.lengthFormatted = this.toHHMMSS(ytmetadata.videoDetails?.lengthSeconds)
+    this.info.lengthSeconds = ytmetadata.videoDetails?.lengthSeconds
+    this.info.author = ytmetadata.videoDetails?.author.name
+    this.info.authorUrl = ytmetadata.videoDetails?.author.channel_url
+    this.info.authorThumbnail = ytmetadata.videoDetails?.author.thumbnails[ytmetadata.videoDetails.author.thumbnails.length - 1].url
+    this.info.thumbnail = ytmetadata.videoDetails?.thumbnails[ytmetadata.videoDetails.thumbnails.length - 1].url
+  }
+  /**
+   * Preloads the stream for smoother playback
+   */
+  async preload() {
+    if (!this.metadata || !this.metadata.full) {
+      this.metadata = await ytdl.getInfo(this.url)
+      setInfo(ytmetadata)
+    }
+    this.preloadedResource = await ytdl.downloadFromInfo(await this.metadata)
+  }
+}
+
+module.exports = YoutubeTrack
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated at Sat Jan 08 2022 23:06:08 GMT+0100 (sentraleuropeisk normaltid)
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
