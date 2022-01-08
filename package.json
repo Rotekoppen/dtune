@@ -4,7 +4,7 @@
   "description": "Minimal simple audio player for discord bots.",
   "main": "index.js",
   "scripts": {
-    "generate-docs": "../.bin/jsdoc -c .jsdoc.json -d ./docs/ ./"
+    "generate-docs": "node_modules/.bin/jsdoc -c .jsdoc.json ./"
   },
   "dependencies": {
     "@discordjs/opus": "^0.6.0",
@@ -15,7 +15,8 @@
     "ytsr": "^3.5.3"
   },
   "devDependencies": {
-    "jsdoc": "^3.6.7"
+    "jsdoc": "^3.6.7",
+    "postman-jsdoc-theme": "^0.0.3"
   },
   "author": "Rotekoppen",
   "license": "UNLICENCED",
