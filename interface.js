@@ -3,7 +3,7 @@ const ytpl = require('ytpl');
 const ytdl = require('ytdl-core');
 
 module.exports = (dtune) => {
-  const {Track, YoutubeTrack, YoutubePlaylistTrack} = dtune.tracks
+  const {Track, YoutubeTrack, YoutubePlaylistTrack} = dtune
   function getPlayer(guildId, create=false) {
     return dtune.getPlayer(guildId, create)
   }

@@ -18,9 +18,9 @@ const {
  */
 exports.players = {}
 
-exports.Track = require("./tracks/track.js"),
-  exports.YoutubeTrack = require("./tracks/youtubeTrack.js"),
-  exports.YoutubePlaylistTrack = require("./tracks/youtubePlaylistTrack.js")
+exports.Track = require("./tracks/track.js")
+exports.YoutubeTrack = require("./tracks/youtubeTrack.js")
+exports.YoutubePlaylistTrack = require("./tracks/youtubePlaylistTrack.js")
 
 /** The player, handles joining, playback and queueing of tracks. It shouldn't be necessary to create this object as getPlayer will create it for you.*/
 class Player {
