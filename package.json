@@ -1,10 +1,10 @@
 {
   "name": "dtune",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Minimal simple audio player for discord bots.",
   "main": "index.js",
   "scripts": {
-    "generate-docs": "node_modules/.bin/jsdoc -c .jsdoc.json ./"
+    "generate-docs": "node_modules/.bin/jsdoc -c .jsdoc.json ./ && mv docs/*.*.*/"
   },
   "dependencies": {
     "@discordjs/opus": "^0.6.0",
