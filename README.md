@@ -18,7 +18,7 @@ npm i dtune
 
 ## Documentation
 
-The documentation is available [here](https://rotekoppen.github.io/docs/dtune)
+The documentation is available [here](https://rotekoppen.github.io/dtune/)
 
 ## Getting started
 
