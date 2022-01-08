@@ -1,3 +1,6 @@
+# Spesific to this project
+docs/
+
 # Logs
 logs
 *.log

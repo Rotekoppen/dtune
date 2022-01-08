@@ -1,0 +1,17 @@
+{
+    "source": {
+        "excludePattern": "(docs|nodemodules)"
+    },
+
+    "opts": {
+        "encoding": "utf8",
+        "readme": "./README.md",
+        "destination": "docs/",
+        "recurse": true,
+        "verbose": true,
+        "template": "../clean-jsdoc-theme",
+        "theme_opts": {
+            "theme": "dark"
+        }
+    }
+}
