@@ -18,14 +18,10 @@ const {
  */
 exports.players = {}
 
-exports.Track = require("./tracks/track.js")
-exports.YoutubeTrack = require("./tracks/youtubeTrack.js")
-exports.YoutubePlaylistTrack = require("./tracks/youtubePlaylistTrack.js")
-
 /** The player, handles joining, playback and queueing of tracks. It shouldn't be necessary to create this object as getPlayer will create it for you.*/
 class Player {
   /**
-   * @param {Snowflake} guildId - The ID of the guild
+   * @param {GuildID} guildId
    */
   constructor(guildId) {
     exports.players[guildId] = this
@@ -81,7 +77,7 @@ class Player {
   }
 
   /**
-   * methodTwo description
+   * Starts the next track
    * @param  {Boolean} [shift=false] If the player should play the next element in the queue, or restart the current.
    * @param  {Boolean} [preloadNext=true] If the player should preload the next track for quicker playback.
    * @return {Promise<?Track>} The track that started playing.
@@ -140,7 +136,7 @@ exports.Player = Player
 /**
  * Deletes the player for the specified guildID
  *
- * @param {Snowflake} guildId - The ID of the guild
+ * @param {GuildID} guildId
  */
 exports.removePlayer = (guildId) => {
   exports.events.emit('playerDestroyed', guildId)
@@ -153,7 +149,7 @@ exports.removePlayer = (guildId) => {
 /**
  * Gets the player for the specified guildID
  *
- * @param {Snowflake} guildId - The ID of the guild
+ * @param {GuildID} guildId
  * @param {Boolean} [createPlayer=false] - If the player should be created if it doesn't exist
  * @return {Player}
  */
@@ -174,7 +170,7 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  *
  * @event Player#playerDestroyed
  * @type {Object}
- * @property {Snowflake} guildId - The guild that the player belonged to
+ * @property {GuildID} guildId
  */
 
 /**
@@ -182,7 +178,7 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  *
  * @event Player#playerCreated
  * @type {object}
- * @property {Player} player - The player that the track was added to
+ * @property {Player} player
  * @property {Track} track - The track that was added
  */
 
@@ -191,7 +187,7 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  *
  * @event Player#skippedTrack
  * @type {object}
- * @property {Player} player - The player that skipped
+ * @property {Player} player
  */
 
 /**
@@ -199,7 +195,7 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  *
  * @event Player#playerCreated
  * @type {object}
- * @property {Player} player - The player that was created
+ * @property {Player} player
  */
 
 /**
@@ -207,7 +203,7 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  *
  * @event Player#joinedVoiceChannel
  * @type {object}
- * @property {Player} player - The player that joined
+ * @property {Player} player
  */
 
 /**
@@ -215,7 +211,7 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  *
  * @event Player#playingTrack
  * @type {object}
- * @property {Player} player - The player that started playing
+ * @property {Player} player
  * @property {Track} track - The track that was started
  */
 

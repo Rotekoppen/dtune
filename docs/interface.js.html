@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>interface.js - Postman Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="DTuneInterface.html">DTuneInterface</a><ul class='methods'><li data-type='method'><a href="DTuneInterface.html#addTrack">addTrack</a></li><li data-type='method'><a href="DTuneInterface.html#createTrack">createTrack</a></li><li data-type='method'><a href="DTuneInterface.html#createTrackWithQuery">createTrackWithQuery</a></li><li data-type='method'><a href="DTuneInterface.html#createTrackWithSearch">createTrackWithSearch</a></li><li data-type='method'><a href="DTuneInterface.html#createTrackWithUrl">createTrackWithUrl</a></li><li data-type='method'><a href="DTuneInterface.html#createYoutubePlaylistTrack">createYoutubePlaylistTrack</a></li><li data-type='method'><a href="DTuneInterface.html#createYoutubeTrack">createYoutubeTrack</a></li><li data-type='method'><a href="DTuneInterface.html#getPlayer">getPlayer</a></li><li data-type='method'><a href="DTuneInterface.html#getQueue">getQueue</a></li><li data-type='method'><a href="DTuneInterface.html#joinVoiceChannel">joinVoiceChannel</a></li><li data-type='method'><a href="DTuneInterface.html#shuffle">shuffle</a></li><li data-type='method'><a href="DTuneInterface.html#skip">skip</a></li></ul></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#addTrack">addTrack</a></li><li data-type='method'><a href="Player.html#join">join</a></li><li data-type='method'><a href="Player.html#shuffleQueue">shuffleQueue</a></li><li data-type='method'><a href="Player.html#skipCurrentTrack">skipCurrentTrack</a></li><li data-type='method'><a href="Player.html#startNextTrack">startNextTrack</a></li></ul></li><li><a href="Track.html">Track</a><ul class='methods'><li data-type='method'><a href="Track.html#play">play</a></li><li data-type='method'><a href="Track.html#preload">preload</a></li><li data-type='method'><a href="Track.html#toHHMMSS">toHHMMSS</a></li></ul></li><li><a href="YoutubePlaylistTrack.html">YoutubePlaylistTrack</a><ul class='methods'><li data-type='method'><a href="YoutubePlaylistTrack.html#play">play</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#preload">preload</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#setInfo">setInfo</a></li><li data-type='method'><a href="YoutubePlaylistTrack.html#toHHMMSS">toHHMMSS</a></li></ul></li><li><a href="YoutubeTrack.html">YoutubeTrack</a><ul class='methods'><li data-type='method'><a href="YoutubeTrack.html#play">play</a></li><li data-type='method'><a href="YoutubeTrack.html#preload">preload</a></li><li data-type='method'><a href="YoutubeTrack.html#setInfo">setInfo</a></li><li data-type='method'><a href="YoutubeTrack.html#toHHMMSS">toHHMMSS</a></li></ul></li></ul><h3>Events</h3><ul><li><a href="Player.html#event:joinedVoiceChannel">joinedVoiceChannel</a></li><li><a href="Player.html#event:playerCreated">playerCreated</a></li><li><a href="Player.html#event:playerDestroyed">playerDestroyed</a></li><li><a href="Player.html#event:playingTrack">playingTrack</a></li><li><a href="Player.html#event:skippedTrack">skippedTrack</a></li></ul><h3>Global</h3><ul><li><a href="global.html#events">events</a></li><li><a href="global.html#getPlayer">getPlayer</a></li><li><a href="global.html#players">players</a></li><li><a href="global.html#removePlayer">removePlayer</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">interface.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const ytsr = require('ytsr');
+const ytpl = require('ytpl');
+const ytdl = require('ytdl-core');
+
+const Track = require('./tracks/track');
+const YoutubeTrack = require('./tracks/youtubeTrack');
+const YoutubePlaylistTrack = require('./tracks/youtubePlaylistTrack');
+
+/**
+ * An interface for dTune that simplifies the code of commonly used functions
+ */
+class DTuneInterface {
+  /**
+   * @param {dTune} dtune - A dTune instance
+   */
+  constructor(dtune) {
+    this.dtune = dtune
+  }
+
+  /**
+   * Gets a player using a guild ID
+   * @param  {GuildID} guildId
+   * @param  {Boolean} [create=false] - If the player should be created if it doesn't exist
+   * @return {Player}
+   */
+  getPlayer(guildId, create = false) {
+    return this.dtune.getPlayer(guildId, create)
+  }
+
+  /**
+   * Gets the queue for a guild using a guild ID
+   * @param  {GuildID} guildId
+   * @param  {Number}  [start=0] - What element to start getting the queue on
+   * @param  {Number}  [stop=-1] - The element to stop getting the queue on
+   * @param  {Boolean} [info=true] - If it only should get the simplified info of the track object, or the whole object
+   * @return {?Track[]}
+   */
+  getQueue(guildId, start = 0, stop = -1, info = true) {
+    const player = this.getPlayer(guildId)
+    if (!player) return undefined
+
+    const queue = {
+      start,
+      stop,
+      length: player.queue.length,
+      info,
+      queue: []
+    }
+
+    player.queue.slice(start, stop).forEach((track, i) => {
+      queue.queue.push(track.info)
+    })
+
+    return queue
+  }
+  /**
+   * Creates a track from an URL
+   * @param  {String} url
+   * @return {Promise&lt;Track>}
+   */
+  async createTrack(url) {
+    return new Track(url)
+  }
+  /**
+   * Creates a YoutubeTrack from an URL
+   * @param  {String} url
+   * @return {Promise&lt;YoutubeTrack>}
+   */
+  async createYoutubeTrack(url) {
+    const ytmetadata = await ytdl.getInfo(url)
+    return new YoutubeTrack(url, ytmetadata)
+  }
+  /**
+   * Creates an array with YoutubePlaylistTracks (Basically a YoutubeTrack) from an URL
+   * @param  {String} url
+   * @return {Promise&lt;YoutubePlaylistTrack[]>}
+   */
+  async createYoutubePlaylistTrack(url) {
+    const playlist = await ytpl(url);
+    const videos = []
+    playlist.items.forEach((item, i) => {
+      videos.push(new YoutubePlaylistTrack(item.shortUrl, item))
+    });
+    return videos
+  }
+  /**
+   * Finds out what type of track to create then creates it
+   * @param  {String} url
+   * @return {Promise&lt;Track|YoutubeTrack|YoutubePlaylistTrack[]>}
+   */
+  async createTrackWithUrl(url) {
+    // is youtube link
+    if (/(youtu)(\.be|be\.com)\//.test(url)) {
+      // is playlist or youtube video
+      if (ytpl.validateID(url)) {
+        return this.createYoutubePlaylistTrack(url)
+      }
+      if (/(?&lt;!user)(\/|\?(v|vi)=)([a-zA-Z0-9-_]{11})/.test(url)) {
+        return this.createYoutubeTrack(url)
+      }
+    }
+    return this.createTrack(url)
+  }
+
+  /**
+   * Creates a YoutubeTrack using a search Query
+   * @param  {String} query - The search query
+   * @return {Promise&lt;YoutubeTrack>}
+   */
+  async createTrackWithSearch(query) {
+    const search = await ytsr(query, {
+      limit: 10
+    })
+    for (var i = 0; i &lt; search.items.length; i++) {
+      if (search.items[i].type == "video") {
+        return await this.createYoutubeTrack(search.items[i].url)
+      }
+    }
+    return
+  }
+
+  /**
+   * Creates a track using a query, tries to find the right type, if not a link, searches for it
+   * @param  {String}  query - Either a url or a search
+   * @return {Promise&lt;Track|YoutubeTrack|YoutubePlaylistTrack[]>}
+   */
+  async createTrackWithQuery(query) {
+    if (/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&amp;=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&amp;=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&amp;;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/.test(query)) {
+      return this.createTrackWithUrl(query)
+    } else {
+      return this.createTrackWithSearch(query)
+    }
+  }
+  /**
+   * Adds the tracks to the queue, can be configured to start or create the player
+   * @param {GuildID} guildId
+   * @param {Track|Track[]}  track - The track to add
+   * @param {Boolean} [dontStartPlayer=false] - Set to true if the player should start playing if nothing else is
+   * @param {Boolean} [create=true] - Set to false if the player shouldn't be created
+   */
+  async addTrack(guildId, track, dontStartPlayer = false, create = true) {
+    const player = this.getPlayer(guildId, create)
+    if (track.constructor !== Array) {
+      player.addTrack(track)
+    } else {
+      track.forEach((item, i) => {
+        player.addTrack(item)
+      });
+    }
+
+    if (!player.playing &amp;&amp; !dontStartPlayer) {
+      player.startNextTrack()
+    }
+  }
+
+  /**
+   * Skips the currently playing song using a guild ID
+   * @param  {GuildID}  guildId
+   * @param  {Boolean} [create=false] - If the player should be created
+   */
+  async skip(guildId, create = false) {
+    const player = this.getPlayer(guildId, create)
+    await player.skipCurrentTrack()
+  }
+  /**
+   * Shuffle the queue using a guild ID
+   * @param  {GuildID} guildId
+   */
+  async shuffle(guildId) {
+    const player = this.getPlayer(guildId)
+    await player.shuffleQueue()
+  }
+  /**
+   * Joines the voiceChannel inside the guild
+   * @param  {GuildID}  guildId
+   * @param  {VoiceChannel}  voiceChannel
+   * @param  {Boolean} [create=true] - If the player should be created
+   * @param  {Boolean} [forceJoin=false] - If it should try to connect, even when connected
+   */
+  async joinVoiceChannel(guildId, voiceChannel, create = true, forceJoin = false) {
+    const player = this.getPlayer(guildId, create)
+    if (!player) return undefined
+    if (!player.connection | forceJoin) await player.join(voiceChannel)
+  }
+}
+
+module.exports = DTuneInterface
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated at Mon Jan 10 2022 21:08:01 GMT+0100 (sentraleuropeisk normaltid)
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

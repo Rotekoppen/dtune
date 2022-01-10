@@ -8,6 +8,13 @@ Because other modules that does the same, either takes way to much control, does
 
 This aims to be minimal, as it wont send messages or do anything else, and lets you do it using events.
 
+# Features
+
+ - Minimal
+ - Queue
+ - Preloading for smoother playback
+ - Short, (you can read the entire source code under 5 minutes)
+
 # Installation
 
 ```sh
@@ -25,7 +32,7 @@ The documentation is available [here](https://rotekoppen.github.io/dtune/)
 I reccomend attaching dTune to your discordjs client object. As this makes it easier to access it if you are using command files.
 
 ```js
-client.dtune = require('./util/dtune');
+client.dtune = require('dtune');
 ```
 
 Now you can fetch players using
@@ -35,10 +42,10 @@ const player = client.dtune.getPlayer(guildId, create)
 // Set create to true to create the player if it doesn't exist
 ```
 
-To help getting started, and simplify controlling dTune, you can use a dTuneInterface.
+To help getting started, and simplify controlling dTune, you can use dTuneInterface.
 
 ```js
-client.dtuneInterface = require('./util/dtune/interface.js')(client.dtune);
+client.dtuneInterface = new (require('../dtune/interface.js'))(client.dtune);
 ```
 
 ### Examples
