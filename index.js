@@ -18,6 +18,12 @@ const {
  */
 exports.players = {}
 
+/**
+ * Preloading can cause some playback issues, but it should work fine, mostly a debug option
+ * @type {Boolean}
+ */
+exports.preloading = true
+
 /** The player, handles joining, playback and queueing of tracks. It shouldn't be necessary to create this object as getPlayer will create it for you.*/
 class Player {
   /**
@@ -91,7 +97,7 @@ class Player {
       this.playing = true
 
       exports.events.emit('playingTrack', this, this.queue[0])
-      if (this.queue[1]) {
+      if (this.queue[1] && this.preloading) {
         this.queue[1].preload()
       }
       return this.queue[0]

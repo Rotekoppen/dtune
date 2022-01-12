@@ -13,6 +13,7 @@ class YoutubeTrack extends Track {
    */
   constructor(url, ytmetadata, requesterId = undefined, type = "YoutubeTrack") {
     super(url, requesterId, type)
+    this.id = ytmetadata.videoDetails?.videoId
     if (this.type == "YoutubeTrack") {
       this.metadata = ytmetadata
       this.setInfo(ytmetadata)
@@ -23,6 +24,7 @@ class YoutubeTrack extends Track {
    * @param {Object} ytmetadata - Data from ytdl.getInfo
    */
   setInfo(ytmetadata) {
+    this.info.id = this.id
     this.info.type = this.type
     this.info.title = ytmetadata.videoDetails?.title
     this.info.lengthFormatted = this.toHHMMSS(ytmetadata.videoDetails?.lengthSeconds)
@@ -38,7 +40,7 @@ class YoutubeTrack extends Track {
   async preload() {
     if (!this.metadata || !this.metadata.full) {
       this.metadata = await ytdl.getInfo(this.url)
-      setInfo(ytmetadata)
+      this.setInfo(this.metadata)
     }
     this.preloadedResource = await ytdl.downloadFromInfo(await this.metadata)
   }

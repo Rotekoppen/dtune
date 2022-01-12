@@ -13,6 +13,7 @@ class YoutubePlaylistTrack extends YoutubeTrack {
    */
   constructor(url, ytmetadata, requesterId = undefined, type = "YoutubePlaylistTrack") {
     super(ytmetadata.shortUrl, ytmetadata, requesterId, type)
+    this.id = ytmetadata.id
     this.playlistUrl = ytmetadata.url
     this.playlistPosition = ytmetadata.index
     this.setInfo(ytmetadata)
@@ -22,16 +23,21 @@ class YoutubePlaylistTrack extends YoutubeTrack {
    * @param {Object} ytmetadata - Data from ytpl()
    */
   setInfo(ytmetadata) {
-    this.info.type = this.type
-    this.info.title = ytmetadata.title
-    this.info.lengthFormatted = ytmetadata.duration
-    this.info.lengthSeconds = ytmetadata.durationSec
-    this.info.author = ytmetadata.author.name
-    this.info.authorUrl = ytmetadata.author.channel_url
-    this.info.authorThumbnail = undefined
-    this.info.thumbnail = ytmetadata.thumbnails[ytmetadata.thumbnails.length - 1].url
-    this.info.playlistUrl = this.playlistUrl
-    this.info.playlistPosition = this.playlistPosition
+    if (ytmetadata.full) {
+      YoutubeTrack.prototype.setInfo.call(this, ytmetadata)
+    }else {
+      this.info.id = this.id
+      this.info.type = this.type
+      this.info.title = ytmetadata.title
+      this.info.lengthFormatted = ytmetadata.duration
+      this.info.lengthSeconds = ytmetadata.durationSec
+      this.info.author = ytmetadata.author.name
+      this.info.authorUrl = ytmetadata.author.channel_url
+      this.info.authorThumbnail = undefined
+      this.info.thumbnail = ytmetadata.thumbnails[ytmetadata.thumbnails.length - 1].url
+      this.info.playlistUrl = this.playlistUrl
+      this.info.playlistPosition = this.playlistPosition
+    }
   }
 }
 

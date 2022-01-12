@@ -1,6 +1,6 @@
 {
   "name": "dtune",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Minimal simple audio player for discord bots.",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "@discordjs/voice": "^0.6.0",
     "sodium": "^3.0.2",
     "uniqid": "^5.4.0",
-    "ytdl-core": "^4.9.2",
+    "ytdl-core": "^4.10.0",
     "ytpl": "^2.2.3",
     "ytsr": "^3.5.3"
   },

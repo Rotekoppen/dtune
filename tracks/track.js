@@ -15,11 +15,13 @@ class Track {
   constructor(url, requesterId = undefined, type = "Track") {
     this.type = type
     this.id = uniqid()
+    this._id = this.id
     this.preloadedResource = undefined
     this.url = url
     this.requesterId = requesterId
     this.info = {
       id: this.id,
+      _id: this.id,
       url: this.url,
       title: this.title,
       type: this.type
