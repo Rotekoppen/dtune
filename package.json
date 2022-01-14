@@ -16,7 +16,7 @@
     "ytsr": "^3.5.3"
   },
   "devDependencies": {
-    "jsdoc": "^3.6.7",
+    "jsdoc": "^3.5.5",
     "postman-jsdoc-theme": "^0.0.3"
   },
   "author": "Rotekoppen",

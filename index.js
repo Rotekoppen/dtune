@@ -40,6 +40,7 @@ class Player {
       if (this.playing) {
         if (this.queue[0].resource.started && !this.queue[0].resource.audioPlayer) {
           this.playing = false
+          exports.events.emit('trackEnded', this, this.queue[0])
           if (this.startNextTrack(true) == null) {}
         }
       }
@@ -180,15 +181,6 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  */
 
 /**
- * Player created event.
- *
- * @event Player#playerCreated
- * @type {object}
- * @property {Player} player
- * @property {Track} track - The track that was added
- */
-
-/**
  * Player skipped track
  *
  * @event Player#skippedTrack
@@ -216,6 +208,15 @@ exports.getPlayer = (guildId, createPlayer = false) => {
  * Player started playing a track.
  *
  * @event Player#playingTrack
+ * @type {object}
+ * @property {Player} player
+ * @property {Track} track - The track that was started
+ */
+
+/**
+ * Player started playing a track.
+ *
+ * @event Player#trackEnded
  * @type {object}
  * @property {Player} player
  * @property {Track} track - The track that was started

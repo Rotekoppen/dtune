@@ -34,7 +34,7 @@ class YoutubePlaylistTrack extends YoutubeTrack {
       this.info.author = ytmetadata.author.name
       this.info.authorUrl = ytmetadata.author.channel_url
       this.info.authorThumbnail = undefined
-      this.info.thumbnail = ytmetadata.thumbnails[ytmetadata.thumbnails.length - 1].url
+      this.info.thumbnail = ytmetadata.thumbnails[ytmetadata.thumbnails.length - 1].url.split("?")[0]
       this.info.playlistUrl = this.playlistUrl
       this.info.playlistPosition = this.playlistPosition
     }
