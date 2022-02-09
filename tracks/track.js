@@ -34,8 +34,8 @@ class Track {
     this.preloadedResource = this.url
   }
   /**
-   * Creates an AudioResource to be played by the player, effectivly starting the playback
-   * @return {Promise<?AudioResource>} [description]
+   * Creates an AudioResource and returns it
+   * @return {Promise<?AudioResource>}
    */
   async play() {
     if (!this.preloadedResource) await this.preload()

@@ -1,5 +1,13 @@
-const ytdl = require('ytdl-core');
+// ytdl is being replaced due to random aborts,
+// TODO: Replace other ytdl parts too
+// TODO: Rewrite youtubeTrack & youtubePlaylistTrack because they're shit
+// const ytdl = require('ytdl-core');
+const {
+  createAudioResource,
+} = require('@discordjs/voice');
+const play = require('play-dl')
 const Track = require('./track.js')
+
 /**
  * Represents a youtube video
  * @type {YoutubeTrack}
@@ -34,15 +42,23 @@ class YoutubeTrack extends Track {
     this.info.authorThumbnail = ytmetadata.videoDetails?.author.thumbnails[ytmetadata.videoDetails.author.thumbnails.length - 1].url
     this.info.thumbnail = ytmetadata.videoDetails?.thumbnails[ytmetadata.videoDetails.thumbnails.length - 1].url
   }
-  /**
-   * Preloads the stream for smoother playback
-   */
   async preload() {
-    if (!this.metadata || !this.metadata.full) {
-      this.metadata = await ytdl.getInfo(this.url)
-      this.setInfo(this.metadata)
-    }
-    this.preloadedResource = await ytdl.downloadFromInfo(await this.metadata)
+    //if (!this.metadata || !this.metadata.full) {
+    //  this.metadata = await ytdl.getInfo(this.url)
+    //  this.setInfo(this.metadata)
+    //}
+    this.preloadedResource = await play.stream(await this.url)
+  }
+  /**
+   * Creates an AudioResource and returns it
+   * @return {Promise<?AudioResource>}
+   */
+  async play() {
+    if (!this.preloadedResource) await this.preload()
+    this.resource = createAudioResource(this.preloadedResource.stream, {
+        inputType: this.preloadedResource.type
+    })
+    return this.resource
   }
 }
 
