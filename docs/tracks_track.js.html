@@ -55,13 +55,13 @@ class Track {
   constructor(url, requesterId = undefined, type = "Track") {
     this.type = type
     this.id = uniqid()
-    this._id = this.id
+    this.uid = this.id
     this.preloadedResource = undefined
     this.url = url
     this.requesterId = requesterId
     this.info = {
       id: this.id,
-      _id: this.id,
+      uid: this.uid,
       url: this.url,
       title: this.title,
       type: this.type
@@ -113,7 +113,7 @@ module.exports = Track
 <br class="clear">
 
 <footer>
-    Documentation generated at Wed Feb 09 2022 13:29:26 GMT+0100 (sentraleuropeisk normaltid)
+    Documentation generated at Fri Feb 11 2022 23:01:28 GMT+0100 (sentraleuropeisk normaltid)
 </footer>
 
 <script>prettyPrint();</script>

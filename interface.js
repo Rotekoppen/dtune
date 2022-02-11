@@ -1,6 +1,5 @@
 const ytsr = require('ytsr');
-const ytpl = require('ytpl');
-const ytdl = require('ytdl-core');
+const play = require('play-dl')
 
 const Track = require('./tracks/track');
 const YoutubeTrack = require('./tracks/youtubeTrack');
@@ -67,8 +66,8 @@ class DTuneInterface {
    * @return {Promise<YoutubeTrack>}
    */
   async createYoutubeTrack(url) {
-    const ytmetadata = await ytdl.getInfo(url)
-    return new YoutubeTrack(url, ytmetadata)
+    const ytMetadata = await play.video_info(url)
+    return new YoutubeTrack(url, ytMetadata)
   }
   /**
    * Creates an array with YoutubePlaylistTracks (Basically a YoutubeTrack) from an URL
@@ -76,10 +75,11 @@ class DTuneInterface {
    * @return {Promise<YoutubePlaylistTrack[]>}
    */
   async createYoutubePlaylistTrack(url) {
-    const playlist = await ytpl(url);
+    const playlist = await play.playlist_info(url, { incomplete : true })
     const videos = []
-    playlist.items.forEach((item, i) => {
-      videos.push(new YoutubePlaylistTrack(item.shortUrl, item))
+    playlist.videos.forEach((video, i) => {
+      console.log(video);
+      videos.push(new YoutubePlaylistTrack(video.url, video))
     });
     return videos
   }
@@ -89,10 +89,11 @@ class DTuneInterface {
    * @return {Promise<Track|YoutubeTrack|YoutubePlaylistTrack[]>}
    */
   async createTrackWithUrl(url) {
+    // TODO: Rewrite for all to use play.validate
     // is youtube link
     if (/(youtu)(\.be|be\.com)\//.test(url)) {
       // is playlist or youtube video
-      if (ytpl.validateID(url)) {
+      if (play.validate(url) == "yt_playlist") {
         return this.createYoutubePlaylistTrack(url)
       }
       if (/(?<!user)(\/|\?(v|vi)=)([a-zA-Z0-9-_]{11})/.test(url)) {
@@ -108,11 +109,10 @@ class DTuneInterface {
    * @return {Promise<YoutubeTrack>}
    */
   async createTrackWithSearch(query) {
-    const search = await ytsr(query, {
-      limit: 10
-    })
-    for (var i = 0; i < search.items.length; i++) {
-      if (search.items[i].type == "video") {
+    const search = await play.search(query, { source: { youtube: "video" }, limit: 10 })
+
+    for (var i = 0; i < search.length; i++) {
+      if (search[i].type == "video") {
         return await this.createYoutubeTrack(search.items[i].url)
       }
     }
@@ -137,20 +137,25 @@ class DTuneInterface {
    * @param {Track|Track[]}  track - The track to add
    * @param {Boolean} [dontStartPlayer=false] - Set to true if the player should start playing if nothing else is
    * @param {Boolean} [create=true] - Set to false if the player shouldn't be created
+   * @return {Object} Info about added
    */
   async addTrack(guildId, track, dontStartPlayer = false, create = true) {
+    const info = {playlist: false, started: false, track, guildId}
     const player = this.getPlayer(guildId, create)
     if (track.constructor !== Array) {
       player.addTrack(track)
     } else {
       track.forEach((item, i) => {
         player.addTrack(item)
+        info.playlist = true
       });
     }
 
     if (!player.playing && !dontStartPlayer) {
       player.startNextTrack()
+      info.started = true
     }
+    return info
   }
 
   /**
