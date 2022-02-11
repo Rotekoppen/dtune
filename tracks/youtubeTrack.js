@@ -16,19 +16,21 @@ const Track = require('./track.js')
 class YoutubeTrack extends Track {
   /**
    * @param {String} url - The Url of the video
-   * @param {Object} ytmetadata - Metadata obtained from ytdl.getInfo()
+   * @param {Object} ytMetadata - Metadata obtained from ytdl.getInfo()
    * @param {Snowflake} [requesterId=undefined] - The ID of the requester
    */
-  constructor(url, ytmetadata, requesterId = undefined, type = "YoutubeTrack") {
+  constructor(url, ytMetadata, requesterId = undefined, type = "YoutubeTrack") {
+    if (ytMetadata.video_details) ytMetadata = ytMetadata.video_details
     super(url, requesterId, type)
-    this.id = ytmetadata.id
-    this.setInfo(ytmetadata)
+    this.id = ytMetadata.id
+    this.setInfo(ytMetadata)
   }
   /**
    * Sets the info of the track according to data from ytdl.getInfo
    * @param {Object} ytMetadata - Data from ytdl.getInfo
    */
   setInfo(ytMetadata) {
+    console.log(ytMetadata);
     this.info.id = this.id
     this.info.type = this.type
     this.info.title = ytMetadata.title

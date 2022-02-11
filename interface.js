@@ -1,4 +1,3 @@
-const ytsr = require('ytsr');
 const play = require('play-dl')
 
 const Track = require('./tracks/track');
@@ -110,13 +109,8 @@ class DTuneInterface {
    */
   async createTrackWithSearch(query) {
     const search = await play.search(query, { source: { youtube: "video" }, limit: 10 })
-
-    for (var i = 0; i < search.length; i++) {
-      if (search[i].type == "video") {
-        return await this.createYoutubeTrack(search.items[i].url)
-      }
-    }
-    return
+    console.log(search);
+    return await this.createYoutubeTrack(search[0].url)
   }
 
   /**

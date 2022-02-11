@@ -38,8 +38,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const ytsr = require('ytsr');
-const play = require('play-dl')
+            <pre class="prettyprint source linenums"><code>const play = require('play-dl')
 
 const Track = require('./tracks/track');
 const YoutubeTrack = require('./tracks/youtubeTrack');
@@ -150,13 +149,8 @@ class DTuneInterface {
    */
   async createTrackWithSearch(query) {
     const search = await play.search(query, { source: { youtube: "video" }, limit: 10 })
-
-    for (var i = 0; i &lt; search.length; i++) {
-      if (search[i].type == "video") {
-        return await this.createYoutubeTrack(search.items[i].url)
-      }
-    }
-    return
+    console.log(search);
+    return await this.createYoutubeTrack(search[0].url)
   }
 
   /**
@@ -242,7 +236,7 @@ module.exports = DTuneInterface
 <br class="clear">
 
 <footer>
-    Documentation generated at Fri Feb 11 2022 23:01:28 GMT+0100 (sentraleuropeisk normaltid)
+    Documentation generated at Sat Feb 12 2022 00:18:09 GMT+0100 (sentraleuropeisk normaltid)
 </footer>
 
 <script>prettyPrint();</script>
