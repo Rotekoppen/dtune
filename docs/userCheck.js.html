@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>tracks/youtubePlaylistTrack.js - Postman Documentation</title>
+    <title>userCheck.js - Postman Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">tracks/youtubePlaylistTrack.js</h1>
+    <h1 class="page-title">userCheck.js</h1>
     
 
     
@@ -38,25 +38,32 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const YoutubeTrack = require('./youtubeTrack.js')
-
-/**
- * Represents a youtube video from a playlist
- * @type {YoutubePlaylistTrack}
- * @extends {YoutubeTrack}
+            <pre class="prettyprint source linenums"><code>/**
+ * Checks if a user is in a voice channel
+ * @param  {Interaction}  interaction Interaction from user in question
+ * @return {boolean} If check passed
  */
-class YoutubePlaylistTrack extends YoutubeTrack {
-  /**
-   * @param {String} url - The Url of the video
-   * @param {Object} ytmetadata - Metadata obtained from ytpl()
-   */
-  constructor(url, ytmetadata) {
-    super(url, ytmetadata)
-    this.type = "YoutubePlaylistTrack"
-  }
+exports.isInVoice = (interaction) => {
+  return interaction.member.voice.channelId
 }
 
-module.exports = YoutubePlaylistTrack
+/**
+ * Checks if a user is in a voice channel with this bot
+ * @param  {Interaction}  interaction Interaction from user in question
+ * @return {boolean} If check passed
+ */
+exports.isInVoiceWithBot = (interaction) => {
+  return interaction.guild.me.voice.channelId &amp;&amp; interaction.member.voice.channelId !== interaction.guild.me.voice.channelId
+}
+
+/**
+ * Checks if a user is in a joinable voice channel
+ * @param  {Interaction}  interaction Interaction from user in question
+ * @return {boolean} If check passed
+ */
+exports.isVoiceJoinable = (interaction) => {
+  return interaction.member.voice.channel.joinable
+}
 </code></pre>
         </article>
     </section>

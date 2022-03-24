@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>tracks/youtubePlaylistTrack.js - Postman Documentation</title>
+    <title>trackCreator.js - Postman Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -28,7 +28,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">tracks/youtubePlaylistTrack.js</h1>
+    <h1 class="page-title">trackCreator.js</h1>
     
 
     
@@ -38,25 +38,76 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const YoutubeTrack = require('./youtubeTrack.js')
+            <pre class="prettyprint source linenums"><code>const play = require('play-dl')
+
+const Track = require('./tracks/track');
+const YoutubeTrack = require('./tracks/youtubeTrack');
+const YoutubePlaylistTrack = require('./tracks/youtubePlaylistTrack');
 
 /**
- * Represents a youtube video from a playlist
- * @type {YoutubePlaylistTrack}
- * @extends {YoutubeTrack}
+ * Creates a track from an URL
+ * @param  {String} url
+ * @return {Promise&lt;Track>}
  */
-class YoutubePlaylistTrack extends YoutubeTrack {
-  /**
-   * @param {String} url - The Url of the video
-   * @param {Object} ytmetadata - Metadata obtained from ytpl()
-   */
-  constructor(url, ytmetadata) {
-    super(url, ytmetadata)
-    this.type = "YoutubePlaylistTrack"
-  }
+exports.createTrack = async (url) => {
+  return new Track(url)
 }
 
-module.exports = YoutubePlaylistTrack
+/**
+ * Creates a YoutubeTrack from an URL
+ * @param  {String} url
+ * @return {Promise&lt;YoutubeTrack>}
+ */
+exports.createYoutubeTrack = async (url) => {
+  const ytMetadata = await play.video_info(url)
+  return new YoutubeTrack(url, ytMetadata)
+}
+
+/**
+ * Creates an array with YoutubePlaylistTracks from an URL
+ * @param  {String} url
+ * @return {Promise&lt;YoutubePlaylistTrack[]>}
+ */
+exports.createYoutubePlaylistTrack = async (url) => {
+  const playlist = await play.playlist_info(url, { incomplete : true })
+  const videos = []
+  playlist.videos.forEach((video) => {
+    videos.push(new YoutubePlaylistTrack(video.url, video))
+  });
+  return videos
+}
+
+/**
+ * Creates a YoutubeTrack using a search Query
+ * @param  {String} query - The search query
+ * @return {Promise&lt;YoutubeTrack>}
+ */
+exports.createTrackWithSearch = async (query) => {
+  // TODO: If search is broken, try to increase this
+  const search = await play.search(query, { source: { youtube: "video" }, limit: 1 })
+  return await exports.createYoutubeTrack(search[0].url)
+}
+
+/**
+ * Creates a track using a query, tries to find the right type, if not a link, searches for it
+ * @param  {String}  query - Either a url or a search
+ * @return {Promise&lt;Track|YoutubeTrack|YoutubePlaylistTrack[]>}
+ */
+exports.createTrackWithQuery = async (query) => {
+  switch (await play.validate(query)) {
+    case 'yt_video':
+      return exports.createYoutubeTrack(query)
+    case 'yt_playlist':
+      return exports.createYoutubePlaylistTrack(query)
+    default:
+      // TODO: When pure tracks are cool try this
+      if (false) { //(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&amp;=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&amp;=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&amp;;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/.test(query)) {
+        return exports.createTrack(query)
+      } else {
+        return exports.createTrackWithSearch(query)
+      }
+  }
+}
 </code></pre>
         </article>
     </section>
