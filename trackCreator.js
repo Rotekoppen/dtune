@@ -60,7 +60,7 @@ exports.createTrackWithQuery = async (query) => {
     case 'yt_playlist':
       return exports.createYoutubePlaylistTrack(query)
     default:
-      // TODO: When pure tracks are cool try this
+      // TODO: When pure tracks are cool try this (aka needs more work)
       if (false) { //(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/.test(query)) {
         return exports.createTrack(query)
       } else {
