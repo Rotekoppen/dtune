@@ -81,12 +81,13 @@ class Player {
     this.guildId = guildId
     this.queue = []
     this.playing = false
+    this.paused = false
     this.player = createAudioPlayer()
     this.player.on("error", console.log)
 
     // Code that starts the next track on end
     this.player.on("stateChange", (state) => {
-      if (this.playing) {
+      if (this.playing && !this.paused) {
         if (state.status = "idle") {
           this.playing = false
           exports.events.emit('trackEnded', this, this.queue[0])
@@ -144,6 +145,7 @@ class Player {
    * @return {Promise<boolean>} True if it could pause
    */
   async pause() {
+    this.paused = true
     return this.player.pause()
   }
 
@@ -152,7 +154,9 @@ class Player {
    * @return {Promise<boolean>} True if it could unpause
    */
   async unpause() {
-    return this.player.unpause()
+    const success = this.player.unpause()
+    this.paused = false
+    return success
   }
 
   /**

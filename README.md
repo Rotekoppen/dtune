@@ -16,6 +16,7 @@ Most features outside playing like searching and checking user and voice channel
  - Queue
  - Preloading for smoother playback
  - Short, (you can read the entire source code under 5 minutes)
+ - Almost discordjs independant, requires only a voiceChannel object to join
 
 # Installation
 
