@@ -4,7 +4,7 @@
   "description": "Minimal simple audio player for discord bots.",
   "main": "index.js",
   "scripts": {
-    "generate-docs": "rm docs/ -rf && node_modules/.bin/jsdoc -c .jsdoc.json ./ && mv docs/dtune/0.*.*/* docs/ && rm docs/dtune/ -rf"
+    "generate-docs": "rm docs/ -rf && node_modules/.bin/jsdoc -c .jsdoc.json ./ && mv docs/dtune/0.*.*/* docs/ && rm docs/dtune/ -rf && echo 'dtune.js.org' > docs/CNAME"
   },
   "dependencies": {
     "@discordjs/opus": "^0.6.0",
