@@ -82,6 +82,7 @@ class Player {
     this.queue = []
     this.playing = false
     this.paused = false
+    this.repeat = "none"
     this.player = createAudioPlayer()
     this.player.on("error", console.log)
 
@@ -150,6 +151,14 @@ class Player {
   }
 
   /**
+   * Set the repeat mode
+   * @param {String} [mode="none"]  "none|all|single"
+   */
+  setRepeat(mode="none") {
+    this.repeat = mode;
+  }
+
+  /**
    * Unpauses the playback
    * @return {Promise<boolean>} True if it could unpause
    */
@@ -161,12 +170,18 @@ class Player {
 
   /**
    * Starts the next track
-   * @param  {Boolean} [shift=false] If the player should play the next element in the queue, or restart the current.
+   * @param  {Boolean} [shift=false] If the player should play the next element in the queue, or restart the current. Ignored if player.repeat is "single"
    * @param  {Boolean} [preloadNext=true] If the player should preload the next track for quicker playback.
    * @return {Promise<?Track>} The track that started playing.
    */
   async startNextTrack(shift = false, preloadNext = true) {
-    if (shift) this.queue.shift();
+    let prev = undefined
+    if (shift && this.repeat != "single") prev = this.queue.shift();
+
+    if (this.repeat == "all") {
+      this.queue.push(prev)
+    }
+
     if (this.queue[0]) {
       let resource = await this.queue[0].play()
       this.player.play(resource)
