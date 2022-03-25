@@ -26,7 +26,7 @@ class YoutubeTrack extends Track {
    * @param {Object} ytMetadata - Data from ytdl.getInfo
    */
   extractMetadata(ytMetadata) {
-    this.metadata.id = this.id
+    this.metadata.id = ytMetadata.id
     this.metadata.type = this.type
     this.metadata.title = ytMetadata.title
     this.metadata.lengthFormatted = ytMetadata.durationRaw

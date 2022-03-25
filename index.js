@@ -274,6 +274,14 @@ class Player {
 
     return queue
   }
+
+  /**
+   * Removes a track from the queue using uid's
+   * @param {String} uid a tracks unique id
+   */
+  removeFromQueue(uid) {
+    this.queue = this.queue.filter(item => return (item.uid !== uid))
+  }
 }
 
 exports.Player = Player

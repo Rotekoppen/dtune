@@ -19,6 +19,7 @@ class Track {
     this.uid = uniqid()
     this.preloadedResource = undefined
     this.url = url
+    this.title = url
     this.metadata = {
       id: this.id,
       uid: this.uid,
