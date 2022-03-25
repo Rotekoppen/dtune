@@ -280,7 +280,7 @@ class Player {
    * @param {String} uid a tracks unique id
    */
   removeFromQueue(uid) {
-    this.queue = this.queue.filter(item => return (item.uid !== uid))
+    this.queue = this.queue.filter(item => {return (item.uid !== uid)})
   }
 }
 
