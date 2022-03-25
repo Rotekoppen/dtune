@@ -45,9 +45,9 @@ const player = client.dtune.getPlayer(guildId, create)
 // Set create to true to create the player if it doesn't exist
 ```
 
-### Examples
+### Used in a bot
 
-Todo, however i am making a bot based on dtune that i will publish as soon as i have it done :)
+[arpeggio-bot](https://github.com/Rotekoppen/arpeggio-bot)
 
 ## Licences and such
 
