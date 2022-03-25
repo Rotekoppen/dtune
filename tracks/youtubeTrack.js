@@ -41,7 +41,7 @@ class YoutubeTrack extends Track {
    * Preloads the track
    */
   async preload() {
-    this.preloadedResource = await play.stream(await this.url)
+    this.preloadedResource = await play.stream(this.url)
   }
 
   /**
