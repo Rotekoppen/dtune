@@ -177,8 +177,12 @@ class Player {
   async startNextTrack(shift = false, preloadNext = true) {
     let prev = undefined
     if (shift && this.repeat != "single") prev = this.queue.shift();
+    if (this.repeat == "single") {
+      this.queue[0].preloadedResource = undefined;
+    }
 
-    if (this.repeat == "all") {
+    if (this.repeat == "all" && prev) {
+      prev.preloadedResource = undefined;
       this.queue.push(prev)
     }
 
