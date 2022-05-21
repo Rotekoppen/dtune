@@ -1,7 +1,7 @@
 const {
   createAudioResource,
 } = require('@discordjs/voice');
-const play = require('play-dl')
+const play = require('play-dl');
 const Track = require('./track.js')
 
 /**
