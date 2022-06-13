@@ -1,6 +1,6 @@
 {
   "name": "dtune",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Minimal simple audio player for discord bots.",
   "main": "index.js",
   "scripts": {
