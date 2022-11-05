@@ -14,7 +14,7 @@
     "uniqid": "^5.4.0"
   },
   "devDependencies": {
-    "jsdoc": "^3.5.5",
+    "jsdoc": "^4.0.0",
     "postman-jsdoc-theme": "^0.0.3"
   },
   "author": "Rotekoppen",
