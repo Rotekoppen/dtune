@@ -13,7 +13,7 @@ exports.isInVoice = (interaction) => {
  * @return {boolean} If check passed
  */
 exports.isInVoiceWithBot = (interaction) => {
-  return interaction.guild.me.voice.channelId && interaction.member.voice.channelId !== interaction.guild.me.voice.channelId
+  return interaction.guild.client.voice.channelId && interaction.member.voice.channelId !== interaction.guild.client.voice.channelId
 }
 
 /**
