@@ -1,5 +1,6 @@
 # Spesific to this project
 package-lock.json
+yarn.lock
 
 # Logs
 logs
